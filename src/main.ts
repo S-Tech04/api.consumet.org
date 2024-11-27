@@ -32,8 +32,27 @@ export const tmdbApi = process.env.TMDB_KEY && process.env.TMDB_KEY;
   const PORT = Number(process.env.PORT) || 3000;
 
   await fastify.register(FastifyCors, {
-    origin: '*',
-    methods: 'GET',
+    origin: '*',  // You might want to restrict this to specific domains in production
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],  // Include all methods you need
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: true,
+    maxAge: 86400,  // How long the results of a preflight request can be cached
+    preflightContinue: true
+  });
+  
+  // You might also want to add a custom hook to handle preflight requests
+  fastify.addHook('onRequest', async (request, reply) => {
+    // Add additional security headers
+    reply.header('Access-Control-Allow-Credentials', 'true');
+    reply.header('Access-Control-Allow-Origin', '*');  // Or your specific domain
+    
+    // Handle preflight
+    if (request.method === 'OPTIONS') {
+      reply.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+      reply.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+      reply.header('Access-Control-Max-Age', '86400');
+      reply.send();
+    }
   });
 
   if (process.env.NODE_ENV === 'DEMO') {
@@ -171,27 +190,3 @@ export default async function handler(req: any, res: any) {
   await fastify.ready()
   fastify.server.emit('request', req, res)
 }
-
-const allowCors = fn => async (req, res) => {
-  res.setHeader('Access-Control-Allow-Credentials', true)
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  // another common pattern
-  // res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  )
-  if (req.method === 'OPTIONS') {
-    res.status(200).end()
-    return
-  }
-  return await fn(req, res)
-}
-
-const handler = (req, res) => {
-  const d = new Date()
-  res.end(d.toString())
-}
-
-module.exports = allowCors(handler)
