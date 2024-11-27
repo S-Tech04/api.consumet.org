@@ -32,20 +32,9 @@ export const tmdbApi = process.env.TMDB_KEY && process.env.TMDB_KEY;
   const PORT = Number(process.env.PORT) || 3000;
 
   await fastify.register(FastifyCors, {
-    origin: (origin, cb) => {
-      // Allow specific origins
-      const allowedOrigins = ['http://127.0.0.1:5500', 'http://localhost:3000', 'https://your-frontend-domain.com'];
-      if (!origin || allowedOrigins.includes(origin)) {
-        cb(null, true);
-      } else {
-        cb(new Error('Not allowed by CORS'));
-      }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow all necessary HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'],   // Allow specific headers
-    credentials: true, // Enable credentials support if needed
+    origin: 'https://player.moviesxtream.com/',
+    methods: 'GET',
   });
-
 
   if (process.env.NODE_ENV === 'DEMO') {
     console.log(chalk.yellowBright('DEMO MODE ENABLED'));
