@@ -16,6 +16,7 @@ import chalk from 'chalk';
 import Utils from './utils';
 import {StreamWish, Filemoon } from '@consumet/extensions';
 import { Voe } from '@consumet/extensions/dist/extractors';
+import DoodStream from './extractors/doodstream';
 
 export const redis =
   process.env.REDIS_HOST &&
@@ -156,10 +157,32 @@ export const tmdbApi = process.env.TMDB_KEY && process.env.TMDB_KEY;
     fastify.get('/streamwish', async (request: any, reply: any) => {
       const { url } = request.query;
       const newUrl = new URL(url);
-      const streamWish = new Voe();
+      const streamWish = new StreamWish();
       const response = await streamWish.extract(newUrl);
       reply.status(200).send(response);
-    })
+    });
+    
+    fastify.get('/doodstream', async (request: any, reply: any) => {
+      const { url } = request.query;
+      if (!url) {
+        return reply.status(400).send({
+          message: 'url is required',
+          error: 'Bad Request',
+        });
+      }
+      
+      try {
+        const newUrl = new URL(url);
+        const doodStream = new DoodStream();
+        const response = await doodStream.extract(newUrl);
+        reply.status(200).send(response);
+      } catch (error) {
+        reply.status(500).send({
+          message: 'An error occurred while extracting the video',
+        });
+      }
+    });
+    
     fastify.get('*', (request, reply) => {
       reply.status(404).send({
         message: '',
