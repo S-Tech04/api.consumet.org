@@ -20,6 +20,7 @@ const routes = async (fastify: FastifyInstance, options: RegisterOptions) => {
   fastify.get('/', async (request: any, reply: any) => {
     reply.status(200).send('Welcome to Consumet Utils!');
   });
+ 
 };
 
 export default routes;
