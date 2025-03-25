@@ -14,7 +14,7 @@ import meta from './routes/meta';
 import news from './routes/news';
 import chalk from 'chalk';
 import Utils from './utils';
-import {StreamWish, Filemoon } from '@consumet/extensions';
+import {StreamWish, Filemoon, Voe } from '@consumet/extensions';
 
 export const redis =
   process.env.REDIS_HOST &&
@@ -155,7 +155,7 @@ export const tmdbApi = process.env.TMDB_KEY && process.env.TMDB_KEY;
     fastify.get('/streamwish', async (request: any, reply: any) => {
       const { url } = request.query;
       const newUrl = new URL(url);
-      const streamWish = new Filemoon();
+      const streamWish = new Voe();
       const response = await streamWish.extract(newUrl);
       reply.status(200).send(response);
     })
