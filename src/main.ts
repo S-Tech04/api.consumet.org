@@ -14,7 +14,7 @@ import meta from './routes/meta';
 import news from './routes/news';
 import chalk from 'chalk';
 import Utils from './utils';
-import {StreamWish} from '@consumet/extensions';
+import {StreamWish, Filemoon } from '@consumet/extensions';
 
 export const redis =
   process.env.REDIS_HOST &&
@@ -155,7 +155,7 @@ export const tmdbApi = process.env.TMDB_KEY && process.env.TMDB_KEY;
     fastify.get('/streamwish', async (request: any, reply: any) => {
       const { url } = request.query;
       const newUrl = new URL(url);
-      const streamWish = new StreamWish();
+      const streamWish = new Filemoon();
       const response = await streamWish.extract(newUrl);
       reply.status(200).send(response);
     })
@@ -166,7 +166,7 @@ export const tmdbApi = process.env.TMDB_KEY && process.env.TMDB_KEY;
       });
     });
 
-    fastify.listen({ port: PORT, host: '0.0.0.0' }, (e, address) => {
+    fastify.listen({ port: PORT, host: '127.0.0.1' }, (e, address) => {
       if (e) throw e;
       console.log(`server listening on ${address}`);
     });
