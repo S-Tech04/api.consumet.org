@@ -14,7 +14,8 @@ import meta from './routes/meta';
 import news from './routes/news';
 import chalk from 'chalk';
 import Utils from './utils';
-import {StreamWish, Filemoon, Voe } from '@consumet/extensions';
+import {StreamWish, Filemoon } from '@consumet/extensions';
+import { Voe } from '@consumet/extensions/dist/extractors';
 
 export const redis =
   process.env.REDIS_HOST &&
