@@ -179,6 +179,7 @@ export const tmdbApi = process.env.TMDB_KEY && process.env.TMDB_KEY;
       } catch (error) {
         reply.status(500).send({
           message: 'An error occurred while extracting the video',
+          error: error instanceof Error ? error.message : 'Unknown error'
         });
       }
     });
